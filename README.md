@@ -1,6 +1,6 @@
 # RKE2 Ansible Role
 
-## !!!!! PATCHED VERSION of https://github.com/lablabs/ansible-role-rke2, fixed non working rke2 when /usr/local is read-only or has a dedicated mountpoint !!!!!  ##
+## !!!!! PATCHED VERSION of https://github.com/lablabs/ansible-role-rke2, fixed non working rke2 when /usr/local is read-only or has a dedicated mountpoint !!!!!
 
 [![Role version](https://img.shields.io/github/v/release/lablabs/ansible-role-rke2)](https://galaxy.ansible.com/ui/standalone/roles/lablabs/rke2)
 [![Role downloads](https://img.shields.io/ansible/role/d/lablabs/rke2)](https://galaxy.ansible.com/lablabs/rke2)
