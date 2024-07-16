@@ -74,9 +74,41 @@
     path: /usr/local
   register: usr_local
 
-- name: Set RKE2 bin path
+# Begin Patch Evantage
+#
+# Removed:
+# - name: Set RKE2 bin path
+#   ansible.builtin.set_fact:
+#     rke2_bin_path: "{{ '/usr/local/bin/rke2' if usr_local.stat.writeable == True else ' /opt/rke2/bin/rke2' }}"
+#
+# From install script
+#   - INSTALL_RKE2_TAR_PREFIX
+#     Installation prefix when using the tar installation method.
+#     Default is /usr/local, unless /usr/local is read-only or has a dedicated mount point,
+#     in which case /opt/rke2 is used instead.
+#
+# Added:
+- name: Check if /usr/local is a mountpoint
+  command: mountpoint -q /usr/local
+  register: volume_stat
+  failed_when: False
+  changed_when: False
+
+- debug:
+    msg: "/usr/local is a mountpoint!"
+  when: volume_stat.rc == 0
+
+- name: Set RKE2 path set default paths
   ansible.builtin.set_fact:
-    rke2_bin_path: "{{ '/usr/local/bin/rke2' if usr_local.stat.writeable == True else ' /opt/rke2/bin/rke2' }}"
+    rke2_bin_path: "/usr/local/bin/rke2"
+    rke2_share_path: "/usr/local/share/rke2"
+
+- name: Set RKE2 path (overrule when /usr/local is not writeable or /usr/local is a mountpoint)
+  ansible.builtin.set_fact:
+    rke2_bin_path: "/opt/rke2/bin/rke2"
+    rke2_share_path: "/opt/rke2/share/rke2"
+  when: usr_local.stat.writeable == False or volume_stat.rc == 0 | default(false)
+# End Patch Evantage
 
 - name: Check RKE2 version
   ansible.builtin.shell: |

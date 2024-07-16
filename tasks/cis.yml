@@ -21,7 +21,12 @@
 
 - name: Copy systemctl config file for kernel hardening
   ansible.builtin.copy:
-    src: "{{ '/usr/local/share/rke2/rke2-cis-sysctl.conf' if (usr_local.stat.writeable) and (partition_result.rc == 1) else '/opt/rke2/share/rke2/rke2-cis-sysctl.conf' }}"
+# Begin Patch Evantage
+# Removed:
+    # src: "{{ '/usr/local/share/rke2/rke2-cis-sysctl.conf' if (usr_local.stat.writeable) and (partition_result.rc == 1) else '/opt/rke2/share/rke2/rke2-cis-sysctl.conf' }}"
+# Added:
+    src: "{{ rke2_share_path }}/rke2-cis-sysctl.conf"
+# End Patch Evantage
     dest: /etc/sysctl.d/60-rke2-cis.conf
     mode: 0600
     remote_src: true
